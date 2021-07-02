@@ -66,6 +66,23 @@ describe("main.js", function () {
       expect(window.updateResult).toHaveBeenCalledTimes(1);
       expect(window.updateResult).toHaveBeenCalledWith(25);
     });
+    it("calls updateResult() (with returnValues)", function () {
+      spyOn(window, "updateResult");
+      spyOn(Calculator.prototype, "add").and.returnValues(5, 11);
+      calculate("5+6");
+      expect(window.updateResult).toHaveBeenCalledTimes(1);
+      expect(window.updateResult).toHaveBeenCalledWith(11);
+    });
+    it("does not handle errors", function () {
+      spyOn(window, "updateResult");
+      spyOn(Calculator.prototype, "multiply").and.throwError(
+        "Something went wrong :shrug:"
+      );
+      expect(function () {
+        calculate("5*5");
+      }).toThrowError();
+      expect(window.updateResult).toHaveBeenCalledTimes(0);
+    });
   });
   describe("updateResult()", function () {
     let element;
